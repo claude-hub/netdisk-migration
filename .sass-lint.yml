@@ -1,0 +1,85 @@
+options:
+  max-warnings: 0
+  merge-default-rules: false
+files:
+  include: 'src/**/*.s+(a|c)ss'
+  ignore:
+    - 'src/styles/main.scss'
+rules:
+  indentation:
+    - 2
+  no-empty-rulesets:
+    - 2
+  no-color-literals:
+    - 2
+  quotes:
+    - 2
+  attribute-quotes:
+    - 2
+    - include: true
+  trailing-semicolon:
+    - 2
+  brace-style:
+    - 2
+    - style: '1tbs'
+    - allow-single-line: false
+  declarations-before-nesting:
+    - 2
+  empty-line-between-blocks:
+    - 2
+  final-newline:
+    - 2
+  hex-length:
+    - 2
+    - style: short
+  hex-notation:
+    - 2
+    - style: lowercase
+  id-name-format:
+    - 2
+    - convention: pascalcase
+  no-color-keywords:
+    - 2
+  no-duplicate-properties:
+    - 2
+  no-invalid-hex:
+    - 2
+  no-misspelled-properties:
+    - 2
+  no-trailing-whitespace:
+    - 2
+  no-trailing-zero:
+    - 2
+  no-url-domains:
+    - 2
+  no-url-protocols:
+    - 2
+  one-declaration-per-line:
+    - 2
+  single-line-per-selector:
+    - 2
+  space-after-bang:
+    - 2
+  space-before-bang:
+    - 2
+  space-after-colon:
+    - 2
+  space-after-comma:
+    - 2
+  space-around-operator:
+    - 2
+  space-before-brace:
+    - 2
+    - include: true
+  space-before-colon:
+    - 2
+    - include: false
+  space-between-parens:
+    - 2
+  variable-name-format:
+    - 2
+    - allow-leading-underscore: false
+    - convention: hyphenatedlowercase
+  zero-unit:
+    - 2
+    - include: false

@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2015",
+    "module": "commonjs",
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "paths": {
+      "actions/*": ["src/actions/*"],
+      "components/*": ["src/components/*"],
+      "constants/*": ["src/constants/*"],
+      "hoc/*": ["src/hoc/*"],
+      "hooks/*": ["src/hooks/*"],
+      "libs/*": ["src/libs/*"],
+      "middlewares/*": ["src/middlewares/*"],
+      "reducers/*": ["src/reducers/*"],
+      "selectors/*": ["src/selectors/*"],
+      "utils/*": ["src/utils/*"],
+      "typings/*": ["src/typings/*"],
+      "features/*": ["src/features/*"],
+      "store/*": ["src/store/*"]
+    },
+    "lib": ["es2015", "es2017", "dom"],
+    "jsx": "react"
+  },
+  "compileOnSave": false,
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

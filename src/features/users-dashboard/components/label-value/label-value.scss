@@ -1,0 +1,17 @@
+.common {
+  display: flex;
+  margin-bottom: 5px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.label {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.value {
+  font-size: 16px;
+}

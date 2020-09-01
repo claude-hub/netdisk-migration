@@ -1,0 +1,15 @@
+@import '~style/colors.scss';
+
+.common {
+  background: $black-55;
+  bottom: 0;
+  height: inherit;
+  left: 0;
+  min-height: 100%;
+
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  z-index: 9998;
+}

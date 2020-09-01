@@ -1,0 +1,9 @@
+@import '~style/colors.scss';
+
+.common {
+  outline: none;
+  background-color: $gray;
+  padding: 5px 15px;
+  border-radius: 20px;
+  border: 1px solid $dark-gray;
+}
