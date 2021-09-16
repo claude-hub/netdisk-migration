@@ -1,0 +1,27 @@
+{
+  "name": "baiduyundownload",
+  "version": "0.0.1",
+  "description": "百度云下载器",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon --harmony index.js",
+    "check": "cross-env NODE_ENV=production nodemon --harmony index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "pm2 start index.js",
+    "stop": "pm2 stop index.js"
+  },
+  "author": "claude",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "cross-env": "^7.0.3",
+    "node-schedule": "^2.0.0",
+    "pm2": "^5.1.1",
+    "qs": "^6.10.1",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5"
+  }
+}
