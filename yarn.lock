@@ -539,14 +539,15 @@ define-properties@^1.1.3:
   dependencies:
     object-keys "^1.0.12"
 
-degenerator@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.nlark.com/degenerator/download/degenerator-2.2.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fdegenerator%2Fdownload%2Fdegenerator-2.2.0.tgz#49e98c11fa0293c5b26edfbb52f15729afcdb254"
-  integrity sha1-SemMEfoCk8Wybt+7UvFXKa/NslQ=
+degenerator@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.nlark.com/degenerator/download/degenerator-3.0.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fdegenerator%2Fdownload%2Fdegenerator-3.0.1.tgz#7ef78ec0c8577a544477308ddf1d2d6e88d51f5b"
+  integrity sha1-fveOwMhXelREdzCN3x0tbojVH1s=
   dependencies:
     ast-types "^0.13.2"
     escodegen "^1.8.1"
     esprima "^4.0.0"
+    vm2 "^3.9.3"
 
 depd@~1.1.2:
   version "1.1.2"
@@ -1361,12 +1362,12 @@ pac-proxy-agent@^4.1.0:
     raw-body "^2.2.0"
     socks-proxy-agent "5"
 
-pac-resolver@^4.1.0:
-  version "4.2.0"
-  resolved "https://registry.nlark.com/pac-resolver/download/pac-resolver-4.2.0.tgz?cache=0&sync_timestamp=1626130414207&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fpac-resolver%2Fdownload%2Fpac-resolver-4.2.0.tgz#b82bcb9992d48166920bc83c7542abb454bd9bdd"
-  integrity sha1-uCvLmZLUgWaSC8g8dUKrtFS9m90=
+pac-resolver@^4.1.0, pac-resolver@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.nlark.com/pac-resolver/download/pac-resolver-5.0.0.tgz?cache=0&sync_timestamp=1626130414207&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fpac-resolver%2Fdownload%2Fpac-resolver-5.0.0.tgz#1d717a127b3d7a9407a16d6e1b012b13b9ba8dc0"
+  integrity sha1-HXF6Ens9epQHoW1uGwErE7m6jcA=
   dependencies:
-    degenerator "^2.2.0"
+    degenerator "^3.0.1"
     ip "^1.1.5"
     netmask "^2.0.1"
 
@@ -2045,6 +2046,11 @@ vizion@~2.2.1:
     git-node-fs "^1.0.0"
     ini "^1.3.5"
     js-git "^0.7.8"
+
+vm2@^3.9.3:
+  version "3.9.3"
+  resolved "https://registry.nlark.com/vm2/download/vm2-3.9.3.tgz#29917f6cc081cc43a3f580c26c5b553fd3c91f40"
+  integrity sha1-KZF/bMCBzEOj9YDCbFtVP9PJH0A=
 
 which@^2.0.1:
   version "2.0.2"
