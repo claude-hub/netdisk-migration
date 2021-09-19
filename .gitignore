@@ -17,3 +17,9 @@ node_modules
 
 # OSX
 .DS_Store
+
+.env.local
+
+/test
+
+/测试1万个文件

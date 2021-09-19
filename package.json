@@ -18,6 +18,8 @@
   "dependencies": {
     "axios": "^0.21.4",
     "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "fs-extra": "^10.0.0",
     "node-schedule": "^2.0.0",
     "pm2": "^5.1.1",
     "qs": "^6.10.1",
