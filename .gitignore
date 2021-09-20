@@ -18,7 +18,7 @@ node_modules
 # OSX
 .DS_Store
 
-.env.local
+.env.local.json
 
 /test
 

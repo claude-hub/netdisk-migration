@@ -1,7 +1,6 @@
 const winston = require('winston');
 const path = require('path');
 const fes = require('fs-extra');
-const dotenv = require('dotenv');
 
 require('winston-daily-rotate-file');
 
@@ -26,20 +25,34 @@ const logger = winston.createLogger({
   ),
 });
 
-const getEnv = () => {
-  let envPath = path.resolve(__dirname, '../.env.local');
-  // env.local文件不存在，则使用.env文件
-  if (!fes.pathExistsSync(envPath)) {
-    envPath = path.resolve(__dirname, '../.env');
+const getEnvPath = () => {
+  const localEnvPath = path.resolve(__dirname, '../.env.local.json');
+  const envPath = path.resolve(__dirname, '../.env.json');
+  // 本地默认使用 .env.local
+  if (fes.pathExistsSync(localEnvPath)) {
+    return localEnvPath;
   }
+  return envPath;
+};
 
-  const { parsed } = dotenv.config({
-    path: envPath,
+const getEnv = () => {
+  const envPath = getEnvPath();
+  const env = fes.readFileSync(envPath, 'utf-8');
+  return JSON.parse(env);
+};
+
+const updateEnv = (params) => {
+  const env = {
+    ...getEnv(),
+    ...params,
+  };
+  fes.writeJSONSync(getEnvPath(), env, {
+    spaces: '\n',
   });
-  return parsed;
 };
 
 module.exports = {
   logger,
   getEnv,
+  updateEnv,
 };

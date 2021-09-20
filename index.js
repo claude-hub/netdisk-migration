@@ -1,9 +1,9 @@
 const fes = require('fs-extra');
+const uploadToAliYun  = require('./src/aliYunUpload');
 
 // const { getEnv } = require('./utils');
 // const baiduYunDownload = require('./src/baiduYunDownload');
 // baiduYunDownload();
-// console.log(getEnv())
 
 // for (let i = 1; i <= 10000; i++) {
 //   const file = `./测试1万个文件/哈哈${i}.txt`;
@@ -11,3 +11,6 @@ const fes = require('fs-extra');
 
 //   fes.writeFileSync(file, 'hello world!');
 // }
+
+
+uploadToAliYun();
