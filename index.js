@@ -1,5 +1,5 @@
 const fes = require('fs-extra');
-const uploadToAliYun  = require('./src/aliYunUpload');
+const { uploadToAliYun } = require('./src/aliYunUpload');
 
 // const { getEnv } = require('./utils');
 // const baiduYunDownload = require('./src/baiduYunDownload');
@@ -11,6 +11,5 @@ const uploadToAliYun  = require('./src/aliYunUpload');
 
 //   fes.writeFileSync(file, 'hello world!');
 // }
-
 
 uploadToAliYun();
