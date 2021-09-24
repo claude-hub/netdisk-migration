@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div style="margin: auto; width: 200px;text-align: center">
+        <h1>登录二维码</h1>
+        <img src="/static/img/qr.jpg" alt="" width="200px" height="200px" id="qr-img">
+    </div>
+    <div style="text-align: center">
+        <div>阿里同步网盘文件夹名：{{ALI_FOLDER_NAME}}</div>
+        <div>本地路径：{{LOCAL_FOLDER_NAME}}</div>
+        <div>提示信息：</div>
+        {% for i in info %}
+        <div>{{ i }}</div>
+        {% endfor %}
+    </div>
+    <script>
+        setInterval(function () {
+            // let qrImg = document.getElementById("qr-img")
+            // qrImg.setAttribute("src", "/static/img/qr.jpg?t=" + Date.parse(Date()))
+            window.open("/", "_self")
+        }, 1000)
+    </script>
+</body>
+</html>

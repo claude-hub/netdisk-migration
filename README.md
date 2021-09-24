@@ -1,2 +1,5 @@
-Python教程
-http://c.biancheng.net/python/
+# 百度网盘同步到阿里云盘
+
+1. 先下载百度网盘的资源到本地
+
+2. 使用 Sync2AliDisk 同步到阿里网盘
