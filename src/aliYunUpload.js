@@ -3,6 +3,7 @@ const { default: axios } = require('axios');
 const fse = require('fs-extra');
 const path = require('path');
 const crypto = require('crypto');
+const rp = require('request-promise');
 const { getEnv, logger, updateEnv } = require('../utils');
 
 const BASE_API = 'https://api.aliyundrive.com';
@@ -55,7 +56,6 @@ const baseRequest = async (req) => {
     if (err?.response?.data?.code === 'AccessTokenInvalid') {
       refreshToken();
       const { ali_access_token: token } = getEnv();
-      console.log(ali_access_token === token);
       return await req?.({
         headers: {
           ...headers,
@@ -138,24 +138,11 @@ const getFileInfo = async (filepath) => {
   };
 };
 
-// const fileExists = async (self, parent_file_id, file_info) => {
-//   const part_num = compute_part_num(file_info, self.part_size)
-//   const data = {"drive_id": self.drive_id,
-//           "part_info_list": [{"part_number": i + 1} for i in range(part_num)],
-//           "parent_file_id": parent_file_id,
-//           "name": file_info.get("file_name"),
-//           "type": "file",
-//           "check_name_mode": "auto_rename",
-//           "size": file_info.get("file_size"),
-//           "pre_hash": file_info.get("pre_hash")}
-//   const res = await axios.post("https://api.aliyundrive.com/adrive/v2/file/createWithFolders", data);
-//   console.log(res);
-// }
-
 const createFile = async (fileInfo, drive_id, parent_file_id = 'root') => {
   const { content_hash, name, size } = fileInfo;
   const params = {
-    auto_rename: true,
+    // auto_rename: true,
+    auto_rename: false,
     content_hash: content_hash,
     content_hash_name: 'sha1',
     drive_id: drive_id,
@@ -173,7 +160,6 @@ const createFile = async (fileInfo, drive_id, parent_file_id = 'root') => {
       ...config,
     });
   });
-  // console.log(data);
   return data;
 };
 
@@ -193,94 +179,50 @@ const uploadComplete = async (drive_id, file_id, upload_id) => {
         ...config,
       });
     });
-    console.log('-------', data);
     return data;
   } catch (err) {
-    // console.log(err);
+    logger.info('上传完成失败！');
+    logger.error(err.message);
   }
 };
 
 const upload = async (filePath, uploadUrl) => {
   try {
     const fileData = fse.readFileSync(filePath, {
-      encoding: 'utf-8'
+      // encoding: 'binary'
+      encoding: 'utf-8',
     });
-    console.log(fileData);
-    // const { data } = await baseRequest((config) => {
-    //   const headers = {
-    //     ...config.headers,
-    //     'content-type': "application/x-www-form-urlencoded",
-    //   };
-    //   console.log(headers);
-    //   return axios({
-    //     method: 'PUT',
-    //     url: uploadUrl,
-    //     data: a,
-    //     headers: {
-    //       'content-type': "application/xml",
-    //     }
-    //   });
-    // });
-    // return data;
-    // await axios({
-    //   method: "PUT",
-    //   url: uploadUrl,
-    //   data: fileData
-    // })
-
-    // const headers = {
-    //   'content-type': 'application/json;charset=UTF-8',
-    //   origin: 'https://www.aliyundrive.com',
-    //   referer: 'https://www.aliyundrive.com/',
-    //   'user-agent':
-    //     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36',
-    // };
-
-    // const res = await fetch(uploadUrl, { method: 'PUT', body: fileData, headers });
-    // console.log(res);
-
-    const FormData = require('form-data');
-    const formdata = new FormData();
-    formdata.append("file", fileData);
-    const res = await fetch(decodeURIComponent(uploadUrl), {
-      method: 'PUT',
-      body: formdata,
-      headers: {
-        'content-type': "application/xml"
-      }
-      //  headers: formdata.getHeaders(),
+    await rp.put(uploadUrl, {
+      body: fileData,
     });
-
-    console.log(res);
-
+    return true;
   } catch (err) {
-    console.log(err);
+    logger.info('上传失败！');
+    logger.error(err.message);
+    return false;
   }
 };
 
 const uploadToAliYun = async () => {
-  // // 第一步：获取用户信息
+  // 1：获取用户信息
   const { default_drive_id } = await getUserInfo();
-  console.log(default_drive_id);
 
   // const fileList = await getFileList(default_drive_id);
-  // // console.log(fileList);
 
   const filePath = path.resolve(__dirname, '../README.md');
-
+  // 2：获取文件信息
   const fileInfo = await getFileInfo(filePath);
-  console.log(fileInfo);
-
-  // 上传
-  // const { file_id, upload_id } = await upload(fileInfo, default_drive_id);
-  // console.log(file_id, upload_id);
+  // 3：创建文件
   const data = await createFile(fileInfo, default_drive_id);
-  const uploadUrl = data['part_info_list'][0]['upload_url'];
-  console.log(decodeURIComponent(uploadUrl));
-
-  const a = await upload(filePath, uploadUrl);
-  // 上传完成
-  // uploadComplete(default_drive_id, file_id, upload_id);
+  const { part_info_list, upload_id, file_id } = data;
+  const uploadUrl = part_info_list?.[0]?.['upload_url'];
+  // 4：上传
+  const status = await upload(filePath, decodeURIComponent(uploadUrl));
+  if (status) {
+    // 4：上传完成
+    await uploadComplete(default_drive_id, file_id, upload_id);
+    logger.info('文件上传成功，文件路径：' + filePath);
+  }
 };
 
 module.exports = { uploadToAliYun, getSha1Hash };

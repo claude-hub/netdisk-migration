@@ -27,6 +27,8 @@
     "node-schedule": "^2.0.0",
     "pm2": "^5.1.1",
     "qs": "^6.10.1",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },
