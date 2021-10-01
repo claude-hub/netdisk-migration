@@ -189,7 +189,6 @@ const uploadComplete = async (drive_id, file_id, upload_id) => {
 const upload = async (filePath, uploadUrl) => {
   try {
     const fileData = fse.readFileSync(filePath, {
-      // encoding: 'binary'
       encoding: 'utf-8',
     });
     await rp.put(uploadUrl, {
@@ -217,7 +216,7 @@ const uploadToAliYun = async () => {
   const { part_info_list, upload_id, file_id } = data;
   const uploadUrl = part_info_list?.[0]?.['upload_url'];
   // 4：上传
-  const status = await upload(filePath, decodeURIComponent(uploadUrl));
+  const status = await upload(filePath, uploadUrl);
   if (status) {
     // 4：上传完成
     await uploadComplete(default_drive_id, file_id, upload_id);
