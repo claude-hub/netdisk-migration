@@ -3,13 +3,13 @@ const { default: axios } = require('axios');
 const fse = require('fs-extra');
 const path = require('path');
 const crypto = require('crypto');
-const rp = require('request-promise');
+const request = require('request-promise');
 const { getEnv, logger, updateEnv } = require('../utils');
 
 const BASE_API = 'https://api.aliyundrive.com';
 
 const refreshToken = async () => {
-  const { ali_refresh_token, ali_access_token } = getEnv();
+  const { ali_refresh_token } = getEnv();
   const params = {
     refresh_token: ali_refresh_token,
   };
@@ -29,10 +29,11 @@ const refreshToken = async () => {
       headers,
     });
     const { refresh_token, access_token, token_type } = data;
-    updateEnv({
+    const token_info = {
       ali_access_token: `${token_type} ${access_token}`,
       ali_refresh_token: refresh_token,
-    });
+    }
+    updateEnv(token_info);
   } catch (err) {
     logger.info('刷新token失败');
     logger.error(err);
@@ -54,7 +55,7 @@ const baseRequest = async (req) => {
     return await req?.({ headers });
   } catch (err) {
     if (err?.response?.data?.code === 'AccessTokenInvalid') {
-      refreshToken();
+      await refreshToken();
       const { ali_access_token: token } = getEnv();
       return await req?.({
         headers: {
@@ -151,6 +152,29 @@ const createFile = async (fileInfo, drive_id, parent_file_id = 'root') => {
     parent_file_id: parent_file_id,
     type: 'file',
     size: size,
+    // 检查文件是否存在
+    check_name_mode: 'refuse'
+  };
+  const { data } = await baseRequest((config) => {
+    return axios({
+      method: 'POST',
+      url: `${BASE_API}/v2/file/create`,
+      data: params,
+      ...config,
+    });
+  });
+  return data;
+};
+
+const createFolder = async (name, drive_id, parent_file_id = 'root') => {
+  const params = {
+    auto_rename: false,
+    drive_id: drive_id,
+    name: name,
+    parent_file_id: parent_file_id,
+    type: 'folder',
+    // 检查文件夹是否存在
+    check_name_mode: 'refuse'
   };
   const { data } = await baseRequest((config) => {
     return axios({
@@ -191,7 +215,7 @@ const upload = async (filePath, uploadUrl) => {
     const fileData = fse.readFileSync(filePath, {
       encoding: 'utf-8',
     });
-    await rp.put(uploadUrl, {
+    await request.put(uploadUrl, {
       body: fileData,
     });
     return true;
@@ -202,26 +226,59 @@ const upload = async (filePath, uploadUrl) => {
   }
 };
 
+const shareFolder = async (drive_id, owner) => {
+  const params = {
+    drive_id,
+    owner,
+    share_file_path: '/a/test'
+  };
+
+  try {
+    const { data } = await baseRequest((config) => {
+      return axios({
+        method: 'POST',
+        url: `${BASE_API}/v2/osspath/share/create`,
+        data: params,
+        ...config,
+      });
+    });
+    return data;
+  } catch (err) {
+    logger.info('创建分享失败！');
+    logger.error(err.message);
+  }
+}
+
 const uploadToAliYun = async () => {
   // 1：获取用户信息
-  const { default_drive_id } = await getUserInfo();
+  const userInfo = await getUserInfo();
+  const { default_drive_id } = userInfo;
 
   // const fileList = await getFileList(default_drive_id);
+
+  const { file_id: defaultFolderId } = await createFolder('百度网盘', default_drive_id);
+  // 当前用户上传的文件夹
+  const { file_id: currentFileId } = await createFolder('同步', default_drive_id, defaultFolderId);
 
   const filePath = path.resolve(__dirname, '../README.md');
   // 2：获取文件信息
   const fileInfo = await getFileInfo(filePath);
   // 3：创建文件
-  const data = await createFile(fileInfo, default_drive_id);
-  const { part_info_list, upload_id, file_id } = data;
-  const uploadUrl = part_info_list?.[0]?.['upload_url'];
-  // 4：上传
-  const status = await upload(filePath, uploadUrl);
-  if (status) {
-    // 4：上传完成
-    await uploadComplete(default_drive_id, file_id, upload_id);
-    logger.info('文件上传成功，文件路径：' + filePath);
+  const data = await createFile(fileInfo, default_drive_id, currentFileId);
+  const { part_info_list, upload_id, file_id, exist } = data;
+  if (!exist) {
+    const uploadUrl = part_info_list?.[0]?.['upload_url'];
+    // 4：上传
+    const status = await upload(filePath, uploadUrl);
+    if (status) {
+      // 4：上传完成
+      await uploadComplete(default_drive_id, file_id, upload_id);
+      logger.info('文件上传成功，文件路径：' + filePath);
+    }
   }
+
+  // const res = await shareFolder(default_drive_id, 'abc');
+  // console.log(res);
 };
 
 module.exports = { uploadToAliYun, getSha1Hash };
