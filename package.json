@@ -7,8 +7,5 @@
   },
   "dependencies": {
     "koa": "^2.15.0"
-  },
-  "devDependencies": {
-    "@vercel/node": "^3.0.15"
   }
 }
