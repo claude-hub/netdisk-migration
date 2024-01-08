@@ -1,11 +1,17 @@
 {
-  "engines": {
-    "node": ">=16"
-  },
-  "scripts": {
-    "build": "node app.js"
-  },
+  "name": "netdisk-migration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
   "dependencies": {
     "koa": "^2.15.0"
-  }
+  },
+  "devDependencies": {
+    "@vercel/node": "2.5.10"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
 }
