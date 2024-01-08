@@ -16,7 +16,8 @@
   "scripts": {
     "start": "nodemon app.js",
     "deploy": "pm2 start app.js",
-    "stop": "pm2 stop app.js"
+    "stop": "pm2 stop app.js",
+    "build": "node app.js"
   },
   "author": "",
   "license": "ISC"
