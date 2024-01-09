@@ -1,15 +1,15 @@
 /*
  * @Author: zhangyunpeng@sensorsdata.cn
- * @Description: 
+ * @Description:
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-09 16:09:30
+ * @LastEditTime: 2024-01-09 19:37:04
  */
 const axios = require('axios');
 const qs = require('node:querystring');
 const router = require('./base');
 const { getBaiduUserinfo } = require('../services');
 
-const cookieName = 'baidu_token'
+const cookieName = 'baidu_token';
 
 // 百度授权重定向页
 router.get('/auth/baidu', async (ctx) => {
@@ -32,7 +32,11 @@ router.get('/auth/baidu', async (ctx) => {
 
     ctx.set('Content-Type', 'text/html');
     const { access_token } = res.data;
-    ctx.cookies.set(cookieName, access_token);
+    ctx.cookies.set(cookieName, access_token, {
+      maxAge: 10 * 24 * 60 * 60 * 1000 /*设置cookie过期时间10天，单位ms*/,
+      // 设置为true后，前端页面不可直接访问cookie。
+      httpOnly: false,
+    });
 
     ctx.body = `
       <!DOCTYPE html>
@@ -65,14 +69,14 @@ router.post('/baidu/logout', async (ctx) => {
   ctx.cookies.set(cookieName, '');
   ctx.body = {
     code: 200,
-    data: 'success'
+    data: 'success',
   };
-})
+});
 
 router.get('/baidu/user', async (ctx) => {
   const token = ctx.cookies.get(cookieName);
   const useinfo = await getBaiduUserinfo(token);
   ctx.body = useinfo;
-})
+});
 
 module.exports = router;
