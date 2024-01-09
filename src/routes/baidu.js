@@ -1,28 +1,17 @@
 /*
  * @Author: zhangyunpeng@sensorsdata.cn
- * @Description:
- * @Date: 2024-01-05 16:50:37
- * @LastEditTime: 2024-01-09 10:46:44
+ * @Description: 
+ * @Date: 2024-01-09 12:01:29
+ * @LastEditTime: 2024-01-09 15:08:51
  */
-const Koa = require('koa');
-const static = require('koa-static');
-const path = require('path');
-const Router = require('@koa/router');
 const axios = require('axios');
 const qs = require('node:querystring');
+const router = require('./base');
 
-const router = new Router({
-  prefix: '/api',
-});
+const cookieName = 'baidu_token'
 
-const app = new Koa();
-
-const staticPath = './public';
-
-// 注册中间件
-app.use(static(path.join(__dirname, staticPath)));
-
-router.get('/auth/baidu', async (ctx, next) => {
+// 百度授权重定向页
+router.get('/auth/baidu', async (ctx) => {
   const { url } = ctx;
   const [, search] = url.split('?');
   const { code = '' } = qs.parse(search) || {};
@@ -39,9 +28,11 @@ router.get('/auth/baidu', async (ctx, next) => {
     const res = await axios.get(
       `https://openapi.baidu.com/oauth/2.0/token?${qs.stringify(params)}`
     );
-  
-    ctx.set("Content-Type", "text/html");
-    
+
+    ctx.set('Content-Type', 'text/html');
+    const { access_token } = res.data;
+    ctx.cookies.set(cookieName, access_token)
+
     ctx.body = `
       <!DOCTYPE html>
       <html lang="en">
@@ -54,24 +45,24 @@ router.get('/auth/baidu', async (ctx, next) => {
 
       <body>
         <script language='javascript' type='text/javascript'>
-          window.opener.postMessage(${JSON.stringify(res.data)});
           window.close();
         </script>
       </body>
 
       </html>
     
-    `
-  } catch(e) {
+    `;
+  } catch (e) {
     ctx.body = {
       code: 500,
-      data: e.response.data
-    }
+      data: e.response.data,
+    };
   }
 });
 
-app.use(router.routes()).use(router.allowedMethods());
+router.get('/baidu/user', async (ctx) => {
+  console.log(ctx.cookies.get(cookieName))
+  ctx.body = '11232'
+})
 
-app.listen(3008, () => {
-  console.log('3008项目启动');
-});
+module.exports = router;
