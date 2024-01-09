@@ -1,3 +1,4 @@
+import axios from 'axios';
 import qs from 'query-string';
 
 /**
@@ -18,7 +19,7 @@ const openWindow = (url, width = 800, height = 600) => {
  * 百度网盘登录，授权码模式
  * @returns
  */
-const baiduDiskLogin = () => {
+export const baiduDiskLogin = () => {
   // doc: https://pan.baidu.com/union/doc/al0rwqzzl
   const params = {
     response_type: 'code',
@@ -35,4 +36,17 @@ const baiduDiskLogin = () => {
   return openWindow(`http://openapi.baidu.com/oauth/2.0/authorize?${query}`);
 };
 
-export { openWindow, baiduDiskLogin };
+// 退出登录
+export const baiduLogout = async () => {
+  await axios.post('/api/baidu/logout');
+}
+
+/**
+ * 获取百度用户信息
+ * @param {*} token
+ * @returns
+ */
+export const baiduUserinfo = async () => {
+  const res = await axios.get('/api/baidu/user');
+  return res.data;
+};
