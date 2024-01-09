@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-09 15:08:51
+ * @LastEditTime: 2024-01-09 15:16:56
  */
 const axios = require('axios');
 const qs = require('node:querystring');
@@ -31,7 +31,7 @@ router.get('/auth/baidu', async (ctx) => {
 
     ctx.set('Content-Type', 'text/html');
     const { access_token } = res.data;
-    ctx.cookies.set(cookieName, access_token)
+    ctx.cookies.set(cookieName, access_token);
 
     ctx.body = `
       <!DOCTYPE html>

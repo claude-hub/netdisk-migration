@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-05 16:50:37
- * @LastEditTime: 2024-01-09 14:30:32
+ * @LastEditTime: 2024-01-09 15:16:01
  */
 const Koa = require('koa');
 const static = require('koa-static');
@@ -12,7 +12,7 @@ const baidu = require('./routes/baidu');
 
 const app = new Koa();
 
-const staticPath = './public';
+const staticPath = '../public';
 
 // 服务端支持跨域
 app.use(
