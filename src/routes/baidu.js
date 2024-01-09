@@ -2,11 +2,12 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-09 15:16:56
+ * @LastEditTime: 2024-01-09 16:09:30
  */
 const axios = require('axios');
 const qs = require('node:querystring');
 const router = require('./base');
+const { getBaiduUserinfo } = require('../services');
 
 const cookieName = 'baidu_token'
 
@@ -60,9 +61,18 @@ router.get('/auth/baidu', async (ctx) => {
   }
 });
 
+router.post('/baidu/logout', async (ctx) => {
+  ctx.cookies.set(cookieName, '');
+  ctx.body = {
+    code: 200,
+    data: 'success'
+  };
+})
+
 router.get('/baidu/user', async (ctx) => {
-  console.log(ctx.cookies.get(cookieName))
-  ctx.body = '11232'
+  const token = ctx.cookies.get(cookieName);
+  const useinfo = await getBaiduUserinfo(token);
+  ctx.body = useinfo;
 })
 
 module.exports = router;
