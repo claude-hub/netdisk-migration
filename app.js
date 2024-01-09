@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-05 16:50:37
- * @LastEditTime: 2024-01-09 10:32:20
+ * @LastEditTime: 2024-01-09 10:46:44
  */
 const Koa = require('koa');
 const static = require('koa-static');
@@ -24,7 +24,6 @@ app.use(static(path.join(__dirname, staticPath)));
 
 router.get('/auth/baidu', async (ctx, next) => {
   const { url } = ctx;
-  console.log(url)
   const [, search] = url.split('?');
   const { code = '' } = qs.parse(search) || {};
 
@@ -33,8 +32,7 @@ router.get('/auth/baidu', async (ctx, next) => {
     code,
     client_id: 'ncYkdVSxHyXRRwuZDnNlVPuD3CVxybNV',
     client_secret: 'UxKE1SlyBmsWf4OymEOa8TsbS0ofWuvy',
-    redirect_uri: 'oob',
-    // redirect_uri: 'https://pan.claude-hub.cn/api/auth/baidu',
+    redirect_uri: 'https://pan.claude-hub.cn/api/auth/baidu',
   };
 
   try {
@@ -64,8 +62,11 @@ router.get('/auth/baidu', async (ctx, next) => {
       </html>
     
     `
-  } catch {
-    ctx.body = 'error'
+  } catch(e) {
+    ctx.body = {
+      code: 500,
+      data: e.response.data
+    }
   }
 });
 
