@@ -2,12 +2,13 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-05 16:50:37
- * @LastEditTime: 2024-01-09 15:16:01
+ * @LastEditTime: 2024-01-16 11:48:02
  */
 const Koa = require('koa');
 const static = require('koa-static');
 const path = require('path');
 const cors = require('koa2-cors');
+const { koaBody } = require('koa-body');
 const baidu = require('./routes/baidu');
 
 const app = new Koa();
@@ -33,6 +34,8 @@ app.use(
 
 // 注册中间件
 app.use(static(path.join(__dirname, staticPath)));
+// 解析body，支持 json、form
+app.use(koaBody());
 
 // routes
 app.use(baidu.routes()).use(baidu.allowedMethods());

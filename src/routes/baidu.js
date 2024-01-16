@@ -2,12 +2,12 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-09 19:37:04
+ * @LastEditTime: 2024-01-16 11:48:44
  */
 const axios = require('axios');
 const qs = require('node:querystring');
 const router = require('./base');
-const { getBaiduUserinfo } = require('../services');
+const { getBaiduUserinfo, getBaiduFiles, downloadBaiduFile } = require('../services');
 
 const cookieName = 'baidu_token';
 
@@ -77,6 +77,26 @@ router.get('/baidu/user', async (ctx) => {
   const token = ctx.cookies.get(cookieName);
   const useinfo = await getBaiduUserinfo(token);
   ctx.body = useinfo;
+});
+
+router.get('/baidu/files', async (ctx) => {
+  const token = ctx.cookies.get(cookieName);
+  const { path = '/' } = ctx.query;
+  const files = await getBaiduFiles(token, path);
+  ctx.body = files;
+});
+
+router.post('/baidu/download', async (ctx) => {
+  const token = ctx.cookies.get(cookieName);
+  const { fsids = [] } = ctx.request.body;
+  if (!fsids.length) {
+    ctx.body = {
+      code: 400,
+      error: 'fsids error!',
+    };
+    return;
+  }
+  downloadBaiduFile(token, fsids);
 });
 
 module.exports = router;
