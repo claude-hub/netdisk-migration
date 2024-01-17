@@ -10,7 +10,8 @@
     "koa": "^2.15.0",
     "koa-body": "^6.0.1",
     "koa-static": "^5.0.0",
-    "koa2-cors": "^2.0.6"
+    "koa2-cors": "^2.0.6",
+    "md5-file": "^5.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

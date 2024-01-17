@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-16 11:48:44
+ * @LastEditTime: 2024-01-17 17:56:03
  */
 const axios = require('axios');
 const qs = require('node:querystring');
@@ -97,6 +97,10 @@ router.post('/baidu/download', async (ctx) => {
     return;
   }
   downloadBaiduFile(token, fsids);
+  ctx.body = {
+    code: 200,
+    data: '下载中',
+  };
 });
 
 module.exports = router;
