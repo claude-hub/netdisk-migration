@@ -2,9 +2,10 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-16 11:51:27
- * @LastEditTime: 2024-01-17 17:51:22
+ * @LastEditTime: 2024-01-18 14:38:36
  */
 const downloader = require('./downloader');
+const fileUtils = require('./file');
 
 /**
  * 百度文件下载
@@ -44,4 +45,5 @@ const downloadBaidu = (list, token) => {
 module.exports = {
   downloadBaidu,
   downloader,
+  ...fileUtils
 };
