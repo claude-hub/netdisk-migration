@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 单线程下载器
  * @Date: 2024-01-17 11:00:43
- * @LastEditTime: 2024-01-17 17:55:05
+ * @LastEditTime: 2024-01-18 11:45:33
  */
 const path = require('path');
 const md5File = require('md5-file');
@@ -55,6 +55,7 @@ const downloader = (url, relativePath = '') => {
 
         if (localSize === totalSize && md5File.sync(filePath) === md5) {
           resolve();
+          console.info('文件已下载完成')
           return;
         }
 

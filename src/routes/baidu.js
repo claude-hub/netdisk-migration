@@ -2,10 +2,11 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-17 17:56:03
+ * @LastEditTime: 2024-01-18 11:44:50
  */
 const axios = require('axios');
 const qs = require('node:querystring');
+const path = require('path');
 const router = require('./base');
 const { getBaiduUserinfo, getBaiduFiles, downloadBaiduFile } = require('../services');
 
@@ -96,10 +97,11 @@ router.post('/baidu/download', async (ctx) => {
     };
     return;
   }
-  downloadBaiduFile(token, fsids);
+  await downloadBaiduFile(token, fsids);
   ctx.body = {
     code: 200,
-    data: '下载中',
+    data: '下载完成',
+    url: path.resolve(__dirname)
   };
 });
 
