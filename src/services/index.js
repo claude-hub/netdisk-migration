@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 11:18:08
- * @LastEditTime: 2024-01-18 14:47:00
+ * @LastEditTime: 2024-01-18 15:17:48
  */
 const axios = require('axios');
 const qs = require('node:querystring');
@@ -46,8 +46,23 @@ const downloadBaiduFile = async (token, fsids = []) => {
   await downloadBaidu(list, token);
 };
 
+const downloadLink = async (token, fsids = []) => {
+  const {
+    data: { list },
+  } = await axios.get(
+    `${API_PREFIX}/multimedia?${qs.stringify({
+      method: 'filemetas',
+      access_token: token,
+      dlink: 1,
+    })}&fsids=[${fsids}]`
+  );
+
+  return list;
+};
+
 module.exports = {
   getBaiduUserinfo,
   getBaiduFiles,
   downloadBaiduFile,
+  downloadLink,
 };

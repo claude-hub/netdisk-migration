@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-18 14:49:23
+ * @LastEditTime: 2024-01-18 15:18:35
  */
 const axios = require('axios');
 const qs = require('node:querystring');
@@ -12,6 +12,7 @@ const {
   getBaiduUserinfo,
   getBaiduFiles,
   downloadBaiduFile,
+  downloadLink,
 } = require('../services');
 const { getFolderFilesByList } = require('../utils');
 
@@ -119,5 +120,32 @@ router.post('/baidu/download', async (ctx) => {
     };
   }
 });
+
+router.post('/baidu/dlinks', async (ctx) => {
+  const token = ctx.cookies.get(cookieName);
+  const { fsids = [] } = ctx.request.body;
+  if (!fsids.length) {
+    ctx.body = {
+      code: 400,
+      error: 'fsids error!',
+    };
+    return;
+  }
+  try {
+    const dlinks = await downloadLink(token, fsids);
+
+    ctx.body = {
+      code: 200,
+      data: dlinks
+    };
+  } catch (e) {
+    ctx.body = {
+      code: 500,
+      message: e
+    };
+  }
+});
+
+
 
 module.exports = router;
