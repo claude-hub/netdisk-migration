@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 11:18:08
- * @LastEditTime: 2024-01-18 11:42:12
+ * @LastEditTime: 2024-01-18 14:47:00
  */
 const axios = require('axios');
 const qs = require('node:querystring');
@@ -30,25 +30,20 @@ const getBaiduFiles = async (token, path = '/') => {
 };
 
 const downloadBaiduFile = async (token, fsids = []) => {
-  try {
-    const {
-      data: { list },
-    } = await axios.get(
-      `${API_PREFIX}/multimedia?${qs.stringify({
-        method: 'filemetas',
-        access_token: token,
-        dlink: 1,
-      })}&fsids=[${fsids}]`
-    );
-  
-    if (list.length <= 0) {
-      return;
-    }
-    await downloadBaidu(list, token);
+  const {
+    data: { list },
+  } = await axios.get(
+    `${API_PREFIX}/multimedia?${qs.stringify({
+      method: 'filemetas',
+      access_token: token,
+      dlink: 1,
+    })}&fsids=[${fsids}]`
+  );
 
-  } catch(e) {
-    console.log(e)
+  if (list.length <= 0) {
+    return;
   }
+  await downloadBaidu(list, token);
 };
 
 module.exports = {

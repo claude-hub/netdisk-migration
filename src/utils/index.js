@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-16 11:51:27
- * @LastEditTime: 2024-01-18 14:38:36
+ * @LastEditTime: 2024-01-18 14:48:41
  */
 const downloader = require('./downloader');
 const fileUtils = require('./file');
@@ -28,8 +28,7 @@ const downloadBaidu = (list, token) => {
           try {
             await downloader(`${dlink}&access_token=${token}`, path);
           } catch (err) {
-            // reject(err);
-            console.log(err)
+            reject(err);
           }
           counter += 1;
           start();

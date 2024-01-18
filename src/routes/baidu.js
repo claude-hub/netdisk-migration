@@ -2,14 +2,18 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-18 14:38:46
+ * @LastEditTime: 2024-01-18 14:49:23
  */
 const axios = require('axios');
 const qs = require('node:querystring');
 const path = require('path');
 const router = require('./base');
-const { getBaiduUserinfo, getBaiduFiles, downloadBaiduFile } = require('../services');
-const { getFolderFilesByTree } = require('../utils');
+const {
+  getBaiduUserinfo,
+  getBaiduFiles,
+  downloadBaiduFile,
+} = require('../services');
+const { getFolderFilesByList } = require('../utils');
 
 const cookieName = 'baidu_token';
 
@@ -98,16 +102,22 @@ router.post('/baidu/download', async (ctx) => {
     };
     return;
   }
-  await downloadBaiduFile(token, fsids);
-  const dir = path.resolve(__dirname, '../../public');
-  const files = getFolderFilesByTree(dir);
+  try {
+    await downloadBaiduFile(token, fsids);
+    const dir = path.resolve(__dirname, '../../public');
+    const files = getFolderFilesByList(dir);
 
-  ctx.body = {
-    code: 200,
-    data: '下载完成',
-    url: files
-  };
+    ctx.body = {
+      code: 200,
+      data: '下载完成',
+      url: files,
+    };
+  } catch (e) {
+    ctx.body = {
+      code: 500,
+      message: e
+    };
+  }
 });
-
 
 module.exports = router;
