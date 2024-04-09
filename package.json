@@ -5,7 +5,9 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "lerna run start --scope=@claude-hub/netdisk-cli"
+    "cli": "lerna run start --scope=@claude-hub/netdisk-cli",
+    "web": "lerna run start --scope=@claude-hub/netdisk-web",
+    "api": "lerna run start --scope=@claude-hub/netdisk-api"
   },
   "dependencies": {
     "dotenv": "^16.4.5"

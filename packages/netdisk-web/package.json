@@ -1,5 +1,5 @@
 {
-  "name": "netdisk-migration-web",
+  "name": "@claude-hub/netdisk-web",
   "private": true,
   "version": "0.0.1",
   "type": "module",
