@@ -1,5 +1,5 @@
 {
-  "name": "@claude-hub/netdisk-core",
+  "name": "@claude-hub/netdisk-api",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
