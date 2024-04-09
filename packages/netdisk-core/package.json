@@ -1,0 +1,25 @@
+{
+  "name": "@claude-hub/netdisk-core",
+  "version": "0.0.1",
+  "description": "百度网盘、阿里网盘等接口",
+  "author": "claude",
+  "homepage": "https://github.com/claude-hub/netdisk-migration#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/claude-hub/netdisk-migration.git"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}
