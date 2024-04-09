@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 单线程下载器
  * @Date: 2024-01-17 11:00:43
- * @LastEditTime: 2024-01-18 11:45:33
+ * @LastEditTime: 2024-04-09 18:25:48
  */
 const path = require('path');
 const md5File = require('md5-file');
@@ -21,18 +21,15 @@ const downloadByRange = async (url, start, end) => {
   return await axios.get(url, {
     headers: {
       Range: `bytes=${start}-${end}`,
+      'User-Agent': 'pan.baidu.com'
     },
     responseType: 'stream',
   });
 };
 
-const downloader = (url, relativePath = '') => {
+const downloader = (url, filePath) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const filePath = path.resolve(
-        __dirname,
-        path.join(downloadFolder, relativePath)
-      );
       // 先请求一个字节，获取到文件大小。以及是否支持断点下载
       const res = await downloadByRange(url, 0, 1);
       const { headers } = res;

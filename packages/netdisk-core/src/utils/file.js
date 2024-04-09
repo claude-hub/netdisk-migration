@@ -2,8 +2,9 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 文件操作
  * @Date: 2024-01-18 14:29:26
- * @LastEditTime: 2024-01-18 14:37:19
+ * @LastEditTime: 2024-04-09 18:04:00
  */
+const path = require('path');
 const fse = require('fs-extra');
 
 // 获取文件夹下所有文件
@@ -67,7 +68,21 @@ const getFolderFilesByTree = (path) => {
   return result;
 };
 
+// 递归创建文件夹
+const mkdirsSync = (dirname) => {
+  if (!dirname) return false
+  if (fse.existsSync(dirname)) {
+    return true;
+  } else {
+    if (mkdirsSync(path.dirname(dirname))) {
+      fse.mkdirSync(dirname);
+      return true;
+    }
+  }
+}
+
 module.exports = {
   getFolderFilesByList,
   getFolderFilesByTree,
+  mkdirsSync,
 };

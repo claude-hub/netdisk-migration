@@ -2,12 +2,15 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-04-09 16:03:46
- * @LastEditTime: 2024-04-09 16:31:10
+ * @LastEditTime: 2024-04-09 18:13:24
  */
 const axios = require('axios');
 const qs = require('node:querystring');
-const { downloadBaidu } = require('../utils');
+const path = require('path');
+const { downloadBaidu, mkdirsSync } = require('../utils');
 
+// 项目根目录的 download 文件夹
+const defaultFolder = path.resolve(process.cwd(), '../../download');
 const API_PREFIX = 'https://pan.baidu.com/rest/2.0/xpan';
 
 const getBaiduUserinfo = async (token) => {
@@ -61,7 +64,7 @@ const downloadBaiduFile = async (token, fsids = []) => {
   await downloadBaidu(list, token);
 };
 
-const downloadLink = async (token, fsids = []) => {
+const baiduFileDlink = async (token, fsids = []) => {
   const {
     data: { list },
   } = await axios.get(
@@ -75,10 +78,22 @@ const downloadLink = async (token, fsids = []) => {
   return list;
 };
 
+const downloadByFileinfo = async (token, fileinfo, folder) => {
+  const { path: filePath, isdir, fs_id } = fileinfo;
+  const realPath = path.join(folder || defaultFolder, filePath);
+
+  if (isdir === 1) {
+    mkdirsSync(realPath);
+  } else {
+    return await baiduFileDlink(token, [fs_id]);
+  }
+}
+
 module.exports = {
   getBaiduUserinfo,
   getBaiduFiles,
   downloadBaiduFile,
-  downloadLink,
-  getBaiduAllList
+  baiduFileDlink,
+  getBaiduAllList,
+  downloadByFileinfo
 };
