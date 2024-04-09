@@ -2,10 +2,11 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 11:18:08
- * @LastEditTime: 2024-01-18 15:17:48
+ * @LastEditTime: 2024-01-19 15:15:03
  */
 const axios = require('axios');
 const qs = require('node:querystring');
+const ali = require('./ali');
 const { downloadBaidu } = require('../utils');
 
 const API_PREFIX = 'https://pan.baidu.com/rest/2.0/xpan';
@@ -65,4 +66,5 @@ module.exports = {
   getBaiduFiles,
   downloadBaiduFile,
   downloadLink,
+  ...ali,
 };

@@ -2,12 +2,12 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description:
  * @Date: 2024-01-09 12:01:29
- * @LastEditTime: 2024-01-18 15:18:35
+ * @LastEditTime: 2024-01-19 15:03:26
  */
 const axios = require('axios');
 const qs = require('node:querystring');
 const path = require('path');
-const router = require('./base');
+const Router = require('@koa/router');
 const {
   getBaiduUserinfo,
   getBaiduFiles,
@@ -18,8 +18,12 @@ const { getFolderFilesByList } = require('../utils');
 
 const cookieName = 'baidu_token';
 
+const router = new Router({
+  prefix: '/api/baidu',
+});
+
 // 百度授权重定向页
-router.get('/auth/baidu', async (ctx) => {
+router.get('/auth', async (ctx) => {
   const { url } = ctx;
   const [, search] = url.split('?');
   const { code = '' } = qs.parse(search) || {};
@@ -72,7 +76,7 @@ router.get('/auth/baidu', async (ctx) => {
   }
 });
 
-router.post('/baidu/logout', async (ctx) => {
+router.post('/logout', async (ctx) => {
   ctx.cookies.set(cookieName, '');
   ctx.body = {
     code: 200,
@@ -80,20 +84,20 @@ router.post('/baidu/logout', async (ctx) => {
   };
 });
 
-router.get('/baidu/user', async (ctx) => {
+router.get('/user', async (ctx) => {
   const token = ctx.cookies.get(cookieName);
   const useinfo = await getBaiduUserinfo(token);
   ctx.body = useinfo;
 });
 
-router.get('/baidu/files', async (ctx) => {
+router.get('/files', async (ctx) => {
   const token = ctx.cookies.get(cookieName);
   const { path = '/' } = ctx.query;
   const files = await getBaiduFiles(token, path);
   ctx.body = files;
 });
 
-router.post('/baidu/download', async (ctx) => {
+router.post('/download', async (ctx) => {
   const token = ctx.cookies.get(cookieName);
   const { fsids = [] } = ctx.request.body;
   if (!fsids.length) {
@@ -121,7 +125,7 @@ router.post('/baidu/download', async (ctx) => {
   }
 });
 
-router.post('/baidu/dlinks', async (ctx) => {
+router.post('/dlinks', async (ctx) => {
   const token = ctx.cookies.get(cookieName);
   const { fsids = [] } = ctx.request.body;
   if (!fsids.length) {
@@ -145,7 +149,5 @@ router.post('/baidu/dlinks', async (ctx) => {
     };
   }
 });
-
-
 
 module.exports = router;
