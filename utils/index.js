@@ -1,6 +1,12 @@
+/*
+ * @Author: zhangyunpeng@sensorsdata.cn
+ * @Description: 
+ * @Date: 2024-01-08 11:15:42
+ * @LastEditTime: 2024-04-09 12:37:51
+ */
 const winston = require('winston');
 const path = require('path');
-const fes = require('fs-extra');
+const fse = require('fs-extra');
 
 require('winston-daily-rotate-file');
 
@@ -29,7 +35,7 @@ const getEnvPath = () => {
   const localEnvPath = path.resolve(__dirname, '../.env.local.json');
   const envPath = path.resolve(__dirname, '../.env.json');
   // 本地默认使用 .env.local
-  if (fes.pathExistsSync(localEnvPath)) {
+  if (fse.pathExistsSync(localEnvPath)) {
     return localEnvPath;
   }
   return envPath;
@@ -37,7 +43,7 @@ const getEnvPath = () => {
 
 const getEnv = () => {
   const envPath = getEnvPath();
-  const env = fes.readFileSync(envPath, 'utf-8');
+  const env = fse.readFileSync(envPath, 'utf-8');
   return JSON.parse(env);
 };
 
@@ -46,13 +52,27 @@ const updateEnv = (params) => {
     ...getEnv(),
     ...params,
   };
-  fes.writeJSONSync(getEnvPath(), env, {
+  fse.writeJSONSync(getEnvPath(), env, {
     spaces: '\n',
   });
 };
+
+// 递归创建文件夹
+const mkdirsSync = (dirname) => {
+  if (!dirname) return false
+  if (fse.existsSync(dirname)) {
+    return true;
+  } else {
+    if (mkdirsSync(path.dirname(dirname))) {
+      fse.mkdirSync(dirname);
+      return true;
+    }
+  }
+}
 
 module.exports = {
   logger,
   getEnv,
   updateEnv,
+  mkdirsSync
 };
