@@ -1,5 +1,10 @@
 # 网盘同步
 
+## 环境
+
+> node >=18
+
+
 ## 百度 access_token 获取
 
 官网文档：https://pan.baidu.com/union/doc/Yl0s0499d
