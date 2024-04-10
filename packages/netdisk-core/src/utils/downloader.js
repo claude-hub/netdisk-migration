@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 单线程下载器
  * @Date: 2024-01-17 11:00:43
- * @LastEditTime: 2024-04-09 18:25:48
+ * @LastEditTime: 2024-04-10 10:58:12
  */
 const path = require('path');
 const md5File = require('md5-file');
@@ -14,8 +14,6 @@ const {
   createWriteStream,
   mkdirsSync,
 } = require('fs-extra');
-
-const downloadFolder = '../../public/download';
 
 const downloadByRange = async (url, start, end) => {
   return await axios.get(url, {

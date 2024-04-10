@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-04-09 16:03:46
- * @LastEditTime: 2024-04-09 18:13:24
+ * @LastEditTime: 2024-04-10 11:32:04
  */
 const axios = require('axios');
 const qs = require('node:querystring');
@@ -13,6 +13,11 @@ const { downloadBaidu, mkdirsSync } = require('../utils');
 const defaultFolder = path.resolve(process.cwd(), '../../download');
 const API_PREFIX = 'https://pan.baidu.com/rest/2.0/xpan';
 
+/**
+ * 获取用户信息
+ * @param {*} token 
+ * @returns 
+ */
 const getBaiduUserinfo = async (token) => {
   const res = await axios.get(
     `${API_PREFIX}/nas?access_token=${token}&method=uinfo`
@@ -20,6 +25,12 @@ const getBaiduUserinfo = async (token) => {
   return res.data;
 };
 
+/**
+ * 获取网盘文件列表
+ * @param {*} token 
+ * @param {*} path 
+ * @returns 
+ */
 const getBaiduFiles = async (token, path = '/') => {
   const res = await axios.get(
     `${API_PREFIX}/file?${qs.stringify({
@@ -32,7 +43,12 @@ const getBaiduFiles = async (token, path = '/') => {
   return res.data;
 };
 
-// 递归获取指定目录下的文件
+/**
+ * 递归获取指定目录下的文件
+ * @param {*} token 
+ * @param {*} path 
+ * @returns 
+ */
 const getBaiduAllList = async (token, path = '/') => {
   const url = `${API_PREFIX}/multimedia?${qs.stringify({
     access_token: token,
@@ -47,6 +63,12 @@ const getBaiduAllList = async (token, path = '/') => {
   return res.data;
 }
 
+/**
+ * 根据 fsids 下载文件
+ * @param {*} token 
+ * @param {*} fsids 
+ * @returns 
+ */
 const downloadBaiduFile = async (token, fsids = []) => {
   const {
     data: { list },
@@ -64,6 +86,12 @@ const downloadBaiduFile = async (token, fsids = []) => {
   await downloadBaidu(list, token);
 };
 
+/**
+ * 根据 fsids 获取下载地址 dlink
+ * @param {*} token 
+ * @param {*} fsids 
+ * @returns 
+ */
 const baiduFileDlink = async (token, fsids = []) => {
   const {
     data: { list },
@@ -78,6 +106,13 @@ const baiduFileDlink = async (token, fsids = []) => {
   return list;
 };
 
+/**
+ * 根据文件详情，获取下载链接 dlink
+ * @param {*} token 
+ * @param {*} fileinfo 
+ * @param {*} folder 
+ * @returns 
+ */
 const downloadByFileinfo = async (token, fileinfo, folder) => {
   const { path: filePath, isdir, fs_id } = fileinfo;
   const realPath = path.join(folder || defaultFolder, filePath);
