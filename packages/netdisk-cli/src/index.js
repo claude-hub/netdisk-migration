@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-04-09 17:35:27
- * @LastEditTime: 2024-04-11 19:57:47
+ * @LastEditTime: 2024-04-11 20:05:09
  */
 
 const path = require('path');
@@ -181,4 +181,4 @@ const openApi = async (folderPath) => {
 }
 
 
-openApi('/测试')
+openApi('/分享书籍')

@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-04-09 16:03:46
- * @LastEditTime: 2024-04-10 11:32:04
+ * @LastEditTime: 2024-04-11 20:07:37
  */
 const axios = require('axios');
 const qs = require('node:querystring');
@@ -37,7 +37,8 @@ const getBaiduFiles = async (token, path = '/') => {
       method: 'list',
       access_token: token,
       dir: path,
-      web: 1,
+      // web: 1,
+      order: 'name',
     })}`
   );
   return res.data;
