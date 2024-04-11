@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 阿里网盘 web 接口
  * @Date: 2024-04-10 14:04:33
- * @LastEditTime: 2024-04-11 16:49:25
+ * @LastEditTime: 2024-04-11 19:53:01
  */
 const axios = require('axios');
 const crypto = require('crypto');
@@ -124,11 +124,14 @@ const aliWebUpload = async (filePath, uploadUrl) => {
     const fileData = fse.readFileSync(filePath, {
       encoding: 'utf-8',
     });
-    await request.put(uploadUrl, {
-      body: fileData,
-    });
+    // await request.put(uploadUrl, {
+    //   body: fileData,
+    // });
+
+    await axios.put(uploadUrl, fileData)
+  
     return true;
-  } catch (err) {
+  } catch (e) {
     return false;
   }
 };
@@ -162,7 +165,7 @@ const getSha1Hash = async (filepath) => {
 
     stream.on('end', () => {
       const sha1 = fsHash.digest('hex');
-      resolve(sha1);
+      resolve(sha1.toUpperCase());
     });
   });
 };

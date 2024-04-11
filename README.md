@@ -14,3 +14,10 @@
 您好， 接入流程里的授权链接默认就是用百度帐号密码登录的，示例链接： http://openapi.baidu.com/oauth/2.0/authorize?response_type=token&client_id=fSds3K4w43rw37tOqlQmTa2kDwaczK4U&redirect_uri=oob&scope=basic,netdisk&display=popup&state=xxx
 
 访问上面 URL 登录后，从回调页面的 URL 上面获取 access_token
+
+## 阿里云盘
+
+1. [先使用下面的链接登录](https://openapi.alipan.com/oauth/authorize?client_id=36f4121ff0ed4d64b315b7a911f9335d&redirect_uri=oob&scope=user:base,file:all:read,file:all:write
+)
+
+2. 获取到code
