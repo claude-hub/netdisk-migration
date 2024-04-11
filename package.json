@@ -10,7 +10,10 @@
     "api": "lerna run start --scope=@claude-hub/netdisk-api"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.5",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
   },
   "devDependencies": {
     "lerna": "^8.1.2"
