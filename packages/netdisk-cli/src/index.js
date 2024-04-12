@@ -85,6 +85,8 @@ const openApi = async (folderPath) => {
         const { path: filePath, isdir, fs_id } = fileinfo;
         const realPath = path.join(downloadFolder, filePath);
 
+        // logger.info(`处理文件: ${filePath}`);
+
         // 如果是文件夹，则创建
         if (isdir === 1) {
           // 创建本地文件夹
@@ -94,13 +96,15 @@ const openApi = async (folderPath) => {
         } else {
           // 阿里网盘对应的文件路径。
           const aliFilePath = filePath.replace(baidu_path, ali_path);
-          const fileId = await isAliPathExist(aliToken, drive_id, path.normalize(aliFilePath), false);
+
+          const fileId = await isAliPathExist(aliToken, drive_id, aliFilePath, false);
+
           if (fileId) {
             // logger.info(`文件已存在: ${filePath}`);
             deleteFile(realPath);
             continue;
           }
-          // logger.info(`正在下载的文件：${filePath}`);
+          logger.info(`正在下载的文件：${filePath}`);
           // 如果是文件，则下载
           const res = await baiduFileDlink(token, [fs_id]);
           const dlink = res[0]?.dlink || '';
