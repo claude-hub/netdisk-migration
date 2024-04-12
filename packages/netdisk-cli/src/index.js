@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-04-09 17:35:27
- * @LastEditTime: 2024-04-12 15:13:38
+ * @LastEditTime: 2024-04-12 15:55:14
  */
 
 const path = require('path');
@@ -73,10 +73,11 @@ const openApi = async (folderPath) => {
 
       const { list = [] } = data;
 
-      const aliFolder = path.join(ali_path, dir);
+      // 上传到阿里网盘对应的文件夹。只把百度网盘路径下的文件，下载到阿里云盘路径下。 
+      const aliFolder = dir.replace(baidu_path , ali_path);
 
       // 根据路径查找阿里云盘的文件，如果不存在则创建
-      const folderId = await isAliPathExist(aliToken, drive_id, path.normalize(aliFolder));
+      const folderId = await isAliPathExist(aliToken, drive_id, aliFolder);
 
       for (let index = 0; index < list.length; index++) {
         const fileinfo = list[index];
@@ -91,9 +92,11 @@ const openApi = async (folderPath) => {
           // 递归子文件夹
           await downloadBaiduFile(filePath);
         } else {
-          const fileId = await isAliPathExist(aliToken, drive_id, filePath, false);
+          // 阿里网盘对应的文件路径。
+          const aliFilePath = filePath.replace(baidu_path, ali_path);
+          const fileId = await isAliPathExist(aliToken, drive_id, path.normalize(aliFilePath), false);
           if (fileId) {
-            // logger.info(`文件已存在: ${filePath}`)
+            // logger.info(`文件已存在: ${filePath}`);
             deleteFile(realPath);
             continue;
           }
