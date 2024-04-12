@@ -23,7 +23,7 @@ require('dotenv').config();
 
 const {
   baidu_access_token: token,
-  downlaod_folder,
+  download_folder,
   ali_access_token: aliToken
 } = process.env;
 
@@ -47,7 +47,7 @@ const webApi = async (folderPath) => {
         const fileinfo = list[index];
 
         const { path: filePath, isdir, fs_id } = fileinfo;
-        const realPath = path.join(downlaod_folder, filePath);
+        const realPath = path.join(download_folder, filePath);
 
         // 如果是文件夹，则创建
         if (isdir === 1) {

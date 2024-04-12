@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 单线程下载器
  * @Date: 2024-01-17 11:00:43
- * @LastEditTime: 2024-04-11 16:55:55
+ * @LastEditTime: 2024-04-12 14:21:54
  */
 const path = require('path');
 const md5File = require('md5-file');
@@ -14,6 +14,7 @@ const {
   createWriteStream,
   mkdirsSync,
 } = require('fs-extra');
+const ProgressBar = require('progress');
 
 const downloadByRange = async (url, start, end) => {
   return await axios.get(url, {
@@ -63,6 +64,20 @@ const downloader = (url, filePath) => {
 
       const { data } = await downloadByRange(url, localSize, totalSize - 1);
 
+      const totalLength = headers['content-length'];
+      const fileName = path.basename(filePath);
+
+      const progressBar = new ProgressBar(
+        `-> ${fileName} downloading [:bar] :percent :rate/bps :etas`,
+        {
+          width: 40,
+          complete: '=',
+          incomplete: ' ',
+          renderThrottle: 1,
+          total: parseInt(totalLength, 10),
+        }
+      );
+
       // 获取下载文件夹
       const dirPath = path.dirname(filePath);
       // 下载的目录，不存在则创建
@@ -75,10 +90,8 @@ const downloader = (url, filePath) => {
 
       data.on('data', (chunk) => {
         localSize += chunk.length;
-        const schedule = ((localSize / totalSize) * 100).toFixed(2);
-        if (schedule >= 100) {
-          console.log(`下载完成: ${schedule}`)
-        }
+
+        progressBar.tick(chunk.length);
       });
 
       data.pipe(fileWriter);

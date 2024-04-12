@@ -2,12 +2,12 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 阿里网盘 web 接口
  * @Date: 2024-04-10 14:04:33
- * @LastEditTime: 2024-04-11 19:53:01
+ * @LastEditTime: 2024-04-12 14:23:32
  */
 const axios = require('axios');
 const crypto = require('crypto');
+const path = require('path');
 const fse = require('fs-extra');
-const request = require('request-promise');
 const BASE_API = 'https://api.aliyundrive.com';
 
 /**
@@ -119,20 +119,23 @@ const aliWebCreateFile = async (token, fileInfo, drive_id, parent_file_id = 'roo
   return data;
 };
 
-const aliWebUpload = async (filePath, uploadUrl) => {
+const aliWebUpload = async (filePath, uploadUrl, token) => {
   try {
-    const fileData = fse.readFileSync(filePath, {
-      encoding: 'utf-8',
-    });
-    // await request.put(uploadUrl, {
-    //   body: fileData,
-    // });
+    const fileData = fse.createReadStream(filePath);
 
-    await axios.put(uploadUrl, fileData)
+    await axios.put(uploadUrl, fileData, {
+      headers: {
+        'Content-Type': '',
+        Authorization: token,
+      }
+    })
+
   
     return true;
   } catch (e) {
-    return false;
+    // 上传失败，直接终止程序
+    console.log(e);
+    process.exit(0);
   }
 };
 
@@ -171,12 +174,12 @@ const getSha1Hash = async (filepath) => {
 };
 
 const getFileInfo = async (filepath) => {
-  const name = filepath.split('/').pop();
+  const name = path.basename(filepath);
   const content_hash = await getSha1Hash(filepath);
   const size = fse.statSync(filepath).size;
   return {
     content_hash,
-    name: name,
+    name,
     size: size,
   };
 };
