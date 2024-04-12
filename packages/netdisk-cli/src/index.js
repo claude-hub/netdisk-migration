@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-04-09 17:35:27
- * @LastEditTime: 2024-04-12 15:55:14
+ * @LastEditTime: 2024-04-12 16:37:21
  */
 
 const path = require('path');
@@ -118,19 +118,21 @@ const openApi = async (folderPath) => {
             // 如果超过了一个上传地址则说明需要分片上传，待实现
             if (part_info_list.length > 1) {
               logger.info(`文件删除失败，需要分片上传：${filePath}`);
+              // 删除文件
+              deleteFile(realPath);
               continue;
             }
             // 4：上传
             const status = await aliWebUpload(realPath, uploadUrl, aliToken);
-            // 成功了，或者秒传了，都可以掉完成接口。如果是秒传，也可以不用掉完成接口
-            if (status || rapid_upload) {
+            if (status) {
               // 4：上传完成
               await aliUploadComplete(aliToken, drive_id, file_id, upload_id);
               // logger.info(`上传阿里云完成: ${filePath}`)
-              // 删除文件
-              deleteFile(realPath);
             }
           }
+
+          // 删除文件
+          deleteFile(realPath);
         }
       }
       // 删除文件夹
