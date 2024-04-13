@@ -135,7 +135,7 @@ const aliWebUpload = async (filePath, uploadUrl, token) => {
   } catch (e) {
     // 上传失败，直接终止程序
     console.log(e);
-    process.exit(0);
+    return false;
   }
 };
 

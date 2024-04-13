@@ -104,7 +104,7 @@ const openApi = async (folderPath) => {
             deleteFile(realPath);
             continue;
           }
-          logger.info(`正在下载的文件：${filePath}`);
+          // logger.info(`正在下载的文件：${filePath}`);
           // 如果是文件，则下载
           const res = await baiduFileDlink(token, [fs_id]);
           const dlink = res[0]?.dlink || '';
@@ -131,7 +131,9 @@ const openApi = async (folderPath) => {
             if (status) {
               // 4：上传完成
               await aliUploadComplete(aliToken, drive_id, file_id, upload_id);
-              // logger.info(`上传阿里云完成: ${filePath}`)
+              // logger.info(`上传阿里云盘完成: ${filePath}`)
+            } else {
+              logger.error(`上传阿里云盘失败: ${filePath}`)
             }
           }
 
@@ -145,7 +147,9 @@ const openApi = async (folderPath) => {
 
     await downloadBaiduFile(folderPath);
   } catch (e) {
-    logger.error(e.response?.data || e)
+    logger.error(e.response?.data || e);
+    // token 会失效，所以重试
+    await openApi(baidu_path);
   }
 
 }
