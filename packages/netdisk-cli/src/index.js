@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-04-09 17:35:27
- * @LastEditTime: 2024-04-12 16:37:21
+ * @LastEditTime: 2024-04-15 16:05:57
  */
 
 const path = require('path');
@@ -19,7 +19,8 @@ const {
   getAliDdrive,
   aliUploadComplete,
   aliCreateFile,
-  getAliToken
+  getAliToken,
+  deleteBaiduFile
 } = require('@claude-hub/netdisk-core');
 const fse = require('fs-extra');
 const { logger } = require('./utils');
@@ -67,6 +68,9 @@ const openApi = async (folderPath) => {
     // 2. 获取默认的备份盘id
     const { default_drive_id: drive_id } = await getAliDdrive(aliToken);
 
+    // 所有文件是否都存在了，如果存在则可以删除百度网盘的文件夹
+    let allFileExist = true;
+
     const downloadBaiduFile = async (dir) => {
       // 获取百度网盘 指定文件夹下的文件及文件夹
       const data = await getBaiduFiles(token, dir);
@@ -74,7 +78,7 @@ const openApi = async (folderPath) => {
       const { list = [] } = data;
 
       // 上传到阿里网盘对应的文件夹。只把百度网盘路径下的文件，下载到阿里云盘路径下。 
-      const aliFolder = dir.replace(baidu_path , ali_path);
+      const aliFolder = dir.replace(baidu_path, ali_path);
 
       // 根据路径查找阿里云盘的文件，如果不存在则创建
       const folderId = await isAliPathExist(aliToken, drive_id, aliFolder);
@@ -104,6 +108,8 @@ const openApi = async (folderPath) => {
             deleteFile(realPath);
             continue;
           }
+          // 还需要下载，说明文件暂时还没有被同步。不删除当前文件夹
+          allFileExist = false;
           // logger.info(`正在下载的文件：${filePath}`);
           // 如果是文件，则下载
           const res = await baiduFileDlink(token, [fs_id]);
@@ -146,6 +152,13 @@ const openApi = async (folderPath) => {
     }
 
     await downloadBaiduFile(folderPath);
+
+    // 所有的都已经同步了。则删除百度网盘的文件夹
+    if (allFileExist) {
+      logger.info(`同步完成，删除百度网盘: ${folderPath}`);
+      await deleteBaiduFile(token, folderPath);
+    }
+
   } catch (e) {
     logger.error(e.response?.data || e);
     // token 会失效，所以重试

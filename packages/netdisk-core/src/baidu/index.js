@@ -2,7 +2,7 @@
  * @Author: zhangyunpeng@sensorsdata.cn
  * @Description: 
  * @Date: 2024-04-09 16:03:46
- * @LastEditTime: 2024-04-11 20:07:37
+ * @LastEditTime: 2024-04-15 15:24:14
  */
 const axios = require('axios');
 const qs = require('node:querystring');
@@ -125,11 +125,36 @@ const downloadByFileinfo = async (token, fileinfo, folder) => {
   }
 }
 
+const deleteBaiduFile = async (token, filepath) => {
+  // /张云鹏/99-IT技术电子书等多个文件/13-圣思园/ssy0001 - Spring源码解读与设计详析-圣思园/视频.rar
+  // const filepath = '/张云鹏/99-IT技术电子书等多个文件/13-圣思园/ssy0001 - Spring源码解读与设计详析-圣思园';
+  const url = `${API_PREFIX}/file?${qs.stringify({
+    method: 'filemanager',
+    access_token: token,
+    opera: 'delete'
+  })}`
+
+  const { data } = await axios({
+    url,
+    method: 'POST',
+    data: `async=0&filelist=["${filepath}"]`,
+    headers: {
+      'Host': 'pan.baidu.com',
+      'User-Agent': 'pan.baidu.com',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }
+  });
+  if (data.errno !== 0) {
+    console.log(`删除失败！${filepath}`, data);
+  }
+}
+
 module.exports = {
   getBaiduUserinfo,
   getBaiduFiles,
   downloadBaiduFile,
   baiduFileDlink,
   getBaiduAllList,
-  downloadByFileinfo
+  downloadByFileinfo,
+  deleteBaiduFile
 };

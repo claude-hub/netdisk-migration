@@ -18,7 +18,7 @@
 
 第三方用户授权，除了扫码获取授权码再获取access_token的方法外，是否有其他授权渠道？
 
-您好， 接入流程里的授权链接默认就是用百度帐号密码登录的，示例链接： http://openapi.baidu.com/oauth/2.0/authorize?response_type=token&client_id=ncYkdVSxHyXRRwuZDnNlVPuD3CVxybNV&redirect_uri=oob&scope=basic,netdisk&display=popup
+您好， 接入流程里的授权链接默认就是用百度帐号密码登录的，示例链接： http://openapi.baidu.com/oauth/2.0/authorize?response_type=token&client_id=ncYkdVSxHyXRRwuZDnNlVPuD3CVxybNV&redirect_uri=oob&scope=basic,netdisk
 
 直接访问上面 URL，登录后，从回调页面的 URL 上面获取 access_token。
 
@@ -31,3 +31,7 @@
 3. 使用授权码登录阿里云盘。获取到 `refresh_token`
 
 完成第二步后，运行 `yarn cli`。控制台会输出 `refresh_token`。把这个值复制到 `.env` 文件内即可
+
+4. 同步文件夹
+
+配置完成 `.env` 后，反复运行 `yarn cli`。直到百度网盘的文件夹被删除（有日志输出）。
