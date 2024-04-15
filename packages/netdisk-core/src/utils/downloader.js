@@ -14,7 +14,7 @@ const {
   createWriteStream,
   mkdirsSync,
 } = require('fs-extra');
-// const ProgressBar = require('progress');
+const ProgressBar = require('progress');
 
 const downloadByRange = async (url, start, end) => {
   return await axios.get(url, {
@@ -51,7 +51,7 @@ const downloader = (url, filePath) => {
 
         if (localSize === totalSize && md5File.sync(filePath) === md5) {
           resolve();
-          console.info('文件已下载完成')
+          console.info(`文件已下载完成: ${filePath}`)
           return;
         }
 
@@ -62,21 +62,21 @@ const downloader = (url, filePath) => {
         }
       }
 
-      const { data } = await downloadByRange(url, localSize, totalSize - 1);
+      const { data, headers: downloadHeaders } = await downloadByRange(url, localSize, totalSize - 1);
 
-      // const totalLength = headers['content-length'];
-      // const fileName = path.basename(filePath);
+      const totalLength = downloadHeaders['content-length'];
+      const fileName = path.basename(filePath);
 
-      // const progressBar = new ProgressBar(
-      //   `-> ${fileName} downloading [:bar] :percent :rate/bps :etas`,
-      //   {
-      //     width: 40,
-      //     complete: '=',
-      //     incomplete: ' ',
-      //     renderThrottle: 1,
-      //     total: parseInt(totalLength, 10),
-      //   }
-      // );
+      const progressBar = new ProgressBar(
+        `-> downloading [:bar] :percent :rate/bps :etas`,
+        {
+          width: 40,
+          complete: '=',
+          incomplete: ' ',
+          renderThrottle: 1,
+          total: parseInt(totalLength, 10),
+        }
+      );
 
       // 获取下载文件夹
       const dirPath = path.dirname(filePath);
@@ -90,8 +90,7 @@ const downloader = (url, filePath) => {
 
       data.on('data', (chunk) => {
         localSize += chunk.length;
-
-        // progressBar.tick(chunk.length);
+        progressBar.tick(chunk.length);
       });
 
       data.pipe(fileWriter);
