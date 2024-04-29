@@ -20,7 +20,7 @@ const downloadByRange = async (url, start, end) => {
   return await axios.get(url, {
     headers: {
       Range: `bytes=${start}-${end}`,
-      'User-Agent': 'pan.baidu.com'
+      'User-Agent': 'pan.baidu.com',
     },
     responseType: 'stream',
   });
@@ -38,7 +38,11 @@ const downloader = (url, filePath) => {
         return;
       }
 
-      const totalSize = Number(headers['content-range'].split('/')[1]) || 0;
+      const totalSize = Number(headers['content-range']?.split('/')[1]) || 0;
+      if (totalSize === 0) {
+        reject('文件为空，不下载');
+        return;
+      }
       let localSize = 0;
       // 文件 md5 信息，下载完成后，需要对比
       const md5 = headers['content-md5'];
@@ -50,8 +54,8 @@ const downloader = (url, filePath) => {
         localSize = stat.size;
 
         if (localSize === totalSize && md5File.sync(filePath) === md5) {
+          console.info(`文件已下载完成: ${filePath}`);
           resolve();
-          console.info(`文件已下载完成: ${filePath}`)
           return;
         }
 
@@ -62,7 +66,11 @@ const downloader = (url, filePath) => {
         }
       }
 
-      const { data, headers: downloadHeaders } = await downloadByRange(url, localSize, totalSize - 1);
+      const { data, headers: downloadHeaders } = await downloadByRange(
+        url,
+        localSize,
+        totalSize - 1
+      );
 
       const totalLength = downloadHeaders['content-length'];
       const fileName = path.basename(filePath);

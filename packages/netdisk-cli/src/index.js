@@ -114,7 +114,13 @@ const openApi = async (folderPath) => {
           // 如果是文件，则下载
           const res = await baiduFileDlink(token, [fs_id]);
           const dlink = res[0]?.dlink || '';
-          await downloader(`${dlink}&access_token=${token}`, realPath);
+
+          try {
+            await downloader(`${dlink}&access_token=${token}`, realPath);
+          } catch(e) {
+            logger.error(`${filePath}: ${e}`);
+            continue;
+          }
 
           // 上传阿里云盘
           const fileInfo = await getFileInfo(realPath);
@@ -168,7 +174,7 @@ const openApi = async (folderPath) => {
 }
 
 (async () => {
-  logger.info(`正在同步文件夹 ${baidu_path}`);
+  console.info(`正在同步文件夹 ${baidu_path}`);
   await openApi(baidu_path);
-  logger.info(`文件夹同步完成 ${baidu_path}`);
+  console.info(`文件夹同步完成 ${baidu_path}`);
 })()
