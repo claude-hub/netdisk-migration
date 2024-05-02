@@ -79,7 +79,7 @@ const openApi = async (folderPath) => {
 
       // 上传到阿里网盘对应的文件夹。只把百度网盘路径下的文件，下载到阿里云盘路径下。 
       const aliFolder = dir.replace(baidu_path, ali_path);
-
+ 
       // 根据路径查找阿里云盘的文件，如果不存在则创建
       const folderId = await isAliPathExist(aliToken, drive_id, aliFolder);
 
@@ -124,7 +124,19 @@ const openApi = async (folderPath) => {
 
           // 上传阿里云盘
           const fileInfo = await getFileInfo(realPath);
-          const data = await aliCreateFile(aliToken, fileInfo, drive_id, folderId);
+
+          let data;
+          try {
+            data = await aliCreateFile(aliToken, fileInfo, drive_id, folderId);
+          } catch (e) {
+            if (e.response?.data?.code === 'AccessTokenExpired') {
+              const { token_type, access_token } = await getAliTokenByRefreshToken(aliRefreshToken);
+              aliToken = `${token_type} ${access_token}`;
+              // 重试
+              data = await aliCreateFile(aliToken, fileInfo, drive_id, folderId);
+            }
+          }
+
           const { part_info_list, upload_id, file_id, exist, rapid_upload } = data;
 
           // 文件不存在，并且不是秒传了
@@ -166,8 +178,9 @@ const openApi = async (folderPath) => {
     }
 
   } catch (e) {
+    console.log(e.response?.data)
     logger.error(e.response?.data || e);
-    // token 会失效，所以重试
+    // 异常重试
     await openApi(baidu_path);
   }
 
